@@ -1,0 +1,142 @@
+:root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-soft: #f1f5f9;
+
+    --text: #475569;
+    --text-h: #0f172a;
+    --text-muted: #64748b;
+
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+
+    --accent: #4f46e5;
+    --accent-hover: #4338ca;
+    --accent-bg: #eef2ff;
+    --accent-border: #c7d2fe;
+
+    --success: #16a34a;
+    --success-bg: #dcfce7;
+
+    --warning: #d97706;
+    --warning-bg: #fef3c7;
+
+    --danger: #dc2626;
+    --danger-bg: #fee2e2;
+
+    --code-bg: #0f172a;
+
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+    --shadow:
+        0 8px 24px rgba(15, 23, 42, 0.08);
+
+    --sans:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        sans-serif;
+
+    --mono:
+        "JetBrains Mono",
+        "Fira Code",
+        Consolas,
+        monospace;
+
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color: var(--text);
+    background: var(--bg);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 0;
+    color: var(--text-h);
+}
+
+h1 {
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+h2 {
+    font-size: 24px;
+    line-height: 1.3;
+}
+
+h3 {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+p {
+    margin: 0;
+}
+
+code,
+pre {
+    font-family: var(--mono);
+}
+
+code {
+    font-size: 14px;
+}
+
+pre {
+    margin: 0;
+}
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+}
