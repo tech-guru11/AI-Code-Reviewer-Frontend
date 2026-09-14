@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import api from "../services/api";
 
 function Repositories() {
+    const [githubRepositories, setGithubRepositories] = useState([]);
     const [repositories, setRepositories] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [syncing, setSyncing] = useState(false);
+    const [syncingRepo, setSyncingRepo] = useState("");
     const [error, setError] = useState("");
     const [syncMessage, setSyncMessage] = useState("");
 
@@ -14,20 +15,35 @@ function Repositories() {
             setLoading(true);
             setError("");
 
-            const response = await api.get("repositories/");
+            const [githubResponse, databaseResponse] =
+                await Promise.all([
+                    api.get("github/repositories/"),
+                    api.get("repositories/"),
+                ]);
 
-            console.log("Repositories:", response.data);
+            console.log(
+                "GitHub repositories:",
+                githubResponse.data
+            );
 
-            setRepositories(response.data);
+            console.log(
+                "Database repositories:",
+                databaseResponse.data
+            );
+
+            setGithubRepositories(githubResponse.data);
+            setRepositories(databaseResponse.data);
         } catch (err) {
             console.error(
                 "Failed to load repositories:",
                 err
             );
 
-            setError(
-                "Unable to load repositories. Make sure the Django server is running."
-            );
+            const message =
+                err.response?.data?.error ||
+                "Unable to load repositories. Make sure Django and GitHub are connected.";
+
+            setError(message);
         } finally {
             setLoading(false);
         }
@@ -37,48 +53,46 @@ function Repositories() {
         loadRepositories();
     }, []);
 
-    const handleSyncRepositories = async () => {
+    const isRepositorySynced = (githubRepository) => {
+        return repositories.some(
+            (repository) =>
+                repository.github_url ===
+                githubRepository.github_url
+        );
+    };
+
+    const handleSyncRepository = async (githubRepository) => {
         try {
-            setSyncing(true);
+            setSyncingRepo(githubRepository.full_name);
             setError("");
             setSyncMessage("");
 
-            /*
-             * The backend currently synchronizes a specific
-             * repository. For now we use the connected
-             * AI-Code-Reviewer repository.
-             */
-            const response = await api.post(
+            await api.post(
                 "github/sync-repository/",
                 {
                     repo_full_name:
-                        "tech-guru11/AI-Code-Reviewer",
+                        githubRepository.full_name,
                 }
             );
 
-            console.log(
-                "Repository synchronized:",
-                response.data
-            );
-
             setSyncMessage(
-                "GitHub repository synchronized successfully."
+                `${githubRepository.name} synchronized successfully.`
             );
 
             await loadRepositories();
         } catch (err) {
             console.error(
-                "Failed to sync GitHub repository:",
+                "Failed to sync repository:",
                 err
             );
 
             const message =
                 err.response?.data?.error ||
-                "Unable to synchronize the GitHub repository.";
+                "Unable to synchronize this repository.";
 
             setError(message);
         } finally {
-            setSyncing(false);
+            setSyncingRepo("");
         }
     };
 
@@ -91,8 +105,7 @@ function Repositories() {
                     <h2>Loading repositories</h2>
 
                     <p>
-                        Fetching your connected GitHub
-                        repositories...
+                        Fetching your GitHub repositories...
                     </p>
                 </div>
             </div>
@@ -101,11 +114,7 @@ function Repositories() {
 
     return (
         <div className="page-container">
-
-            {/* HEADER */}
-
             <div className="page-header">
-
                 <div>
                     <p className="eyebrow">
                         CODE MANAGEMENT
@@ -114,42 +123,28 @@ function Repositories() {
                     <h1>Repositories</h1>
 
                     <p>
-                        Manage the GitHub repositories connected
-                        to your AI code review system.
+                        Select a GitHub repository to connect
+                        it to your AI code review system.
                     </p>
                 </div>
 
                 <div className="repository-header-actions">
-
                     <div className="review-count">
-                        {repositories.length}{" "}
-                        {repositories.length === 1
+                        {githubRepositories.length}{" "}
+                        {githubRepositories.length === 1
                             ? "Repository"
                             : "Repositories"}
                     </div>
 
                     <button
                         className="sync-repositories-button"
-                        onClick={handleSyncRepositories}
-                        disabled={syncing}
+                        onClick={loadRepositories}
+                        disabled={loading}
                     >
-                        {syncing ? (
-                            <>
-                                <span className="button-spinner"></span>
-                                Syncing...
-                            </>
-                        ) : (
-                            <>
-                                ↻ Sync GitHub
-                            </>
-                        )}
+                        ↻ Refresh
                     </button>
-
                 </div>
-
             </div>
-
-            {/* MESSAGES */}
 
             {syncMessage && (
                 <div className="success-message">
@@ -163,141 +158,167 @@ function Repositories() {
                 </div>
             )}
 
-            {/* EMPTY STATE */}
-
-            {repositories.length === 0 ? (
-
+            {githubRepositories.length === 0 ? (
                 <div className="empty-state">
-
                     <div className="empty-state-icon">
                         ▣
                     </div>
 
-                    <h2>No repositories connected</h2>
+                    <h2>No GitHub repositories found</h2>
 
                     <p>
-                        Synchronize a GitHub repository to start
-                        reviewing pull requests with AI.
+                        Make sure your GitHub account is connected
+                        and that you have access to at least one
+                        repository.
                     </p>
-
-                    <button
-                        className="sync-repositories-button"
-                        onClick={handleSyncRepositories}
-                        disabled={syncing}
-                    >
-                        {syncing ? (
-                            <>
-                                <span className="button-spinner"></span>
-                                Syncing...
-                            </>
-                        ) : (
-                            <>
-                                ↻ Sync GitHub Repository
-                            </>
-                        )}
-                    </button>
-
                 </div>
-
             ) : (
-
                 <div className="repository-grid">
+                    {githubRepositories.map(
+                        (githubRepository) => {
+                            const synced =
+                                isRepositorySynced(
+                                    githubRepository
+                                );
 
-                    {repositories.map((repository) => (
+                            const syncing =
+                                syncingRepo ===
+                                githubRepository.full_name;
 
-                        <article
-                            className="repository-card"
-                            key={repository.id}
-                        >
+                            const databaseRepository =
+                                repositories.find(
+                                    (repository) =>
+                                        repository.github_url ===
+                                        githubRepository.github_url
+                                );
 
-                            <div className="repository-card-header">
-
-                                <div className="repository-icon">
-                                    ▣
-                                </div>
-
-                                <span className="repository-status">
-                                    Connected
-                                </span>
-
-                            </div>
-
-                            <div className="repository-content">
-
-                                <p className="repository-label">
-                                    GITHUB REPOSITORY
-                                </p>
-
-                                <h2>
-                                    {repository.name}
-                                </h2>
-
-                                <p className="repository-description">
-                                    {repository.description ||
-                                        "No description provided for this repository."}
-                                </p>
-
-                            </div>
-
-                            <div className="repository-details">
-
-                                <div>
-                                    <span>
-                                        Repository ID
-                                    </span>
-
-                                    <strong>
-                                        #{repository.id}
-                                    </strong>
-                                </div>
-
-                                {repository.created_at && (
-                                    <div>
-                                        <span>
-                                            Connected
-                                        </span>
-
-                                        <strong>
-                                            {new Date(
-                                                repository.created_at
-                                            ).toLocaleDateString()}
-                                        </strong>
-                                    </div>
-                                )}
-
-                            </div>
-
-                            <div className="repository-actions">
-
-                                <Link
-                                    to={`/pull-requests?repository=${repository.id}`}
+                            return (
+                                <article
+                                    className="repository-card"
+                                    key={
+                                        githubRepository.id
+                                    }
                                 >
-                                    View Pull Requests
-                                </Link>
+                                    <div className="repository-card-header">
+                                        <div className="repository-icon">
+                                            ▣
+                                        </div>
 
-                                {repository.github_url && (
-                                    <a
-                                        href={
-                                            repository.github_url
-                                        }
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="repository-github-button"
-                                    >
-                                        View on GitHub ↗
-                                    </a>
-                                )}
+                                        <span
+                                            className={
+                                                synced
+                                                    ? "repository-status"
+                                                    : "repository-status repository-status-available"
+                                            }
+                                        >
+                                            {synced
+                                                ? "Connected"
+                                                : "Available"}
+                                        </span>
+                                    </div>
 
-                            </div>
+                                    <div className="repository-content">
+                                        <p className="repository-label">
+                                            GITHUB REPOSITORY
+                                        </p>
 
-                        </article>
+                                        <h2>
+                                            {
+                                                githubRepository.name
+                                            }
+                                        </h2>
 
-                    ))}
+                                        <p className="repository-description">
+                                            {githubRepository.description ||
+                                                "No description provided for this repository."}
+                                        </p>
+                                    </div>
 
+                                    <div className="repository-details">
+                                        <div>
+                                            <span>
+                                                GitHub
+                                            </span>
+
+                                            <strong>
+                                                {
+                                                    githubRepository.full_name
+                                                }
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>
+                                                Language
+                                            </span>
+
+                                            <strong>
+                                                {githubRepository.language ||
+                                                    "Not specified"}
+                                            </strong>
+                                        </div>
+
+                                        <div>
+                                            <span>
+                                                Visibility
+                                            </span>
+
+                                            <strong>
+                                                {githubRepository.private
+                                                    ? "Private"
+                                                    : "Public"}
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                    <div className="repository-actions">
+                                        {synced &&
+                                        databaseRepository ? (
+                                            <Link
+                                                to={`/pull-requests?repository=${databaseRepository.id}`}
+                                            >
+                                                View Pull Requests
+                                            </Link>
+                                        ) : (
+                                            <button
+                                                className="sync-repositories-button"
+                                                onClick={() =>
+                                                    handleSyncRepository(
+                                                        githubRepository
+                                                    )
+                                                }
+                                                disabled={
+                                                    syncing
+                                                }
+                                            >
+                                                {syncing ? (
+                                                    <>
+                                                        <span className="button-spinner"></span>
+                                                        Syncing...
+                                                    </>
+                                                ) : (
+                                                    "Sync Repository"
+                                                )}
+                                            </button>
+                                        )}
+
+                                        <a
+                                            href={
+                                                githubRepository.github_url
+                                            }
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="repository-github-button"
+                                        >
+                                            View on GitHub ↗
+                                        </a>
+                                    </div>
+                                </article>
+                            );
+                        }
+                    )}
                 </div>
-
             )}
-
         </div>
     );
 }
