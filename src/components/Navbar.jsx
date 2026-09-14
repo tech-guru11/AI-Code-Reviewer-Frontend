@@ -15,7 +15,7 @@ function Navbar() {
 
     const handleGitHubConnect = () => {
         window.location.href =
-            "http://127.0.0.1:8000/api/auth/github/connect/";
+            `${import.meta.env.VITE_API_BASE_URL}auth/github/connect/`;
     };
 
     const handleLogout = async () => {
