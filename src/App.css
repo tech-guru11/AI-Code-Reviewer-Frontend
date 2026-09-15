@@ -1,26 +1,215 @@
-/* ================================
-   NAVBAR BUTTONS
-   ================================ */
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
-/* GitHub Connect Button */
-.github-connect-button {
-    width: 100%;
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+
+    width: 250px;
+    height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+
+    background: #111827;
+    border-right: 1px solid #1f2937;
+
+    box-shadow: 4px 0 20px rgba(15, 23, 42, 0.08);
+}
+
+
+/* =========================================================
+   SIDEBAR BRAND
+   ========================================================= */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 4px 10px 24px;
+
+    border-bottom: 1px solid #1f2937;
+
+    text-decoration: none;
+}
+
+.navbar-brand h1,
+.navbar-brand span {
+    margin: 0;
+
+    color: #ffffff;
+}
+
+.navbar-brand h1 {
+    font-size: 17px;
+    font-weight: 750;
+    letter-spacing: -0.3px;
+}
+
+
+/* Logo */
+.navbar-logo {
+    width: 38px;
+    height: 38px;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
 
-    padding: 11px 14px;
-    margin-top: 14px;
+    border-radius: 10px;
 
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
+    background: #4f46e5;
+    color: #ffffff;
+
+    font-size: 18px;
+    font-weight: 800;
+
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    margin-top: 24px;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    width: 100%;
+    min-height: 44px;
+
+    box-sizing: border-box;
+
+    padding: 0 13px;
+
+    border-radius: 9px;
+
+    color: #9ca3af;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.nav-links a:hover {
+    background: #1f2937;
+    color: #ffffff;
+    transform: translateX(2px);
+}
+
+
+/* Active navigation item */
+.nav-links a.active {
+    background: #312e81;
+    color: #ffffff;
+
+    box-shadow:
+        inset 3px 0 0 #818cf8,
+        0 4px 12px rgba(79, 70, 229, 0.12);
+}
+
+
+/* =========================================================
+   NAVIGATION ICONS
+   ========================================================= */
+
+.nav-links a span:first-child {
+    width: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #9ca3af;
+
+    font-size: 17px;
+}
+
+.nav-links a:hover span:first-child,
+.nav-links a.active span:first-child {
+    color: #a5b4fc;
+}
+
+
+/* =========================================================
+   SECTION LABEL
+   ========================================================= */
+
+.sidebar-section-title {
+    margin: 26px 12px 9px;
+
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 750;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+   ========================================================= */
+
+.navbar-bottom {
+    margin-top: auto;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #1f2937;
+}
+
+
+/* =========================================================
+   GITHUB CONNECT BUTTON
+   ========================================================= */
+
+.github-connect-button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 11px 13px;
+    margin-top: 0;
+
+    box-sizing: border-box;
+
+    border: 1px solid #374151;
+    border-radius: 9px;
 
     background: #24292f;
     color: #ffffff;
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 650;
 
     cursor: pointer;
 
@@ -33,11 +222,11 @@
 
 .github-connect-button:hover {
     background: #30363d;
-    border-color: rgba(255, 255, 255, 0.25);
+    border-color: #4b5563;
 
     transform: translateY(-1px);
 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
 }
 
 .github-connect-button:active {
@@ -49,9 +238,9 @@
 }
 
 
-/* ================================
+/* =========================================================
    LOGOUT BUTTON
-   ================================ */
+   ========================================================= */
 
 .logout-button {
     width: 100%;
@@ -59,19 +248,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 9px;
 
-    padding: 10px 14px;
-    margin-top: 10px;
+    padding: 10px 13px;
+    margin-top: 9px;
 
-    border: 1px solid rgba(239, 68, 68, 0.25);
-    border-radius: 8px;
+    box-sizing: border-box;
 
-    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.22);
+    border-radius: 9px;
+
+    background: rgba(239, 68, 68, 0.07);
     color: #f87171;
 
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 650;
 
     cursor: pointer;
 
@@ -83,8 +274,8 @@
 }
 
 .logout-button:hover {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: rgba(239, 68, 68, 0.45);
+    background: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.4);
     color: #fca5a5;
 
     transform: translateY(-1px);
@@ -99,9 +290,9 @@
 }
 
 
-/* ================================
-   GITHUB CONNECTED STATUS
-   ================================ */
+/* =========================================================
+   GITHUB CONNECTED
+   ========================================================= */
 
 .github-connected {
     display: flex;
@@ -109,11 +300,14 @@
     gap: 10px;
 
     width: 100%;
+
     padding: 11px 12px;
-    margin-top: 14px;
+    margin-bottom: 9px;
+
+    box-sizing: border-box;
 
     border: 1px solid rgba(34, 197, 94, 0.18);
-    border-radius: 8px;
+    border-radius: 9px;
 
     background: rgba(34, 197, 94, 0.07);
 }
@@ -122,8 +316,10 @@
 .connection-status strong {
     display: block;
 
-    font-size: 13px;
-    font-weight: 600;
+    color: #e5e7eb;
+
+    font-size: 12px;
+    font-weight: 650;
 }
 
 .github-connected span:not(.connection-dot),
@@ -132,8 +328,9 @@
 
     margin-top: 2px;
 
-    font-size: 11px;
     color: #94a3b8;
+
+    font-size: 10px;
 }
 
 .connection-dot {
@@ -143,15 +340,18 @@
     flex-shrink: 0;
 
     border-radius: 50%;
+
     background: #22c55e;
 
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.65);
+    box-shadow:
+        0 0 0 3px rgba(34, 197, 94, 0.08),
+        0 0 8px rgba(34, 197, 94, 0.65);
 }
 
 
-/* ================================
-   SYSTEM STATUS
-   ================================ */
+/* =========================================================
+   SYSTEM CONNECTION STATUS
+   ========================================================= */
 
 .connection-status {
     display: flex;
@@ -159,19 +359,45 @@
     gap: 10px;
 
     width: 100%;
-    padding: 10px 12px;
-    margin-top: 12px;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 2px 0;
+    margin-top: 8px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 
-/* ================================
-   GITHUB MESSAGE
-   ================================ */
+/* =========================================================
+   MAIN CONTENT OFFSET
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   Because the sidebar is fixed, your page content needs
+   space on the left.
+*/
+
+main,
+.main-content,
+.page-content {
+    margin-left: 250px;
+    min-height: 100vh;
+}
+
+
+/* If your pages use .page-container directly */
+.page-container {
+    margin-left: 250px;
+}
+
+
+/* =========================================================
+   GITHUB OAUTH MESSAGE
+   ========================================================= */
 
 .github-oauth-message {
     position: fixed;
+
     top: 20px;
     right: 20px;
 
@@ -187,16 +413,17 @@
 
     padding: 13px 16px;
 
-    border-radius: 9px;
+    border-radius: 10px;
 
     background: #1e293b;
     color: #ffffff;
 
     border: 1px solid rgba(255, 255, 255, 0.1);
 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.25);
 
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .github-oauth-message button {
@@ -206,6 +433,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+
+    flex-shrink: 0;
 
     border: none;
     border-radius: 6px;
@@ -228,36 +457,129 @@
     color: #ffffff;
 }
 
-
-/* Success message */
 .github-oauth-message.success {
     border-left: 4px solid #22c55e;
 }
 
-
-/* Error message */
 .github-oauth-message.error {
     border-left: 4px solid #ef4444;
 }
 
 
-/* ================================
+/* =========================================================
    MOBILE
-   ================================ */
+   ========================================================= */
 
 @media (max-width: 768px) {
+
+    .navbar {
+        width: 70px;
+
+        padding: 18px 10px;
+    }
+
+    .navbar-brand {
+        justify-content: center;
+
+        padding: 2px 0 18px;
+    }
+
+    .navbar-brand h1 {
+        display: none;
+    }
+
+    .navbar-logo {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nav-links a {
+        justify-content: center;
+
+        padding: 0;
+
+        font-size: 0;
+    }
+
+    .nav-links a span:first-child {
+        font-size: 18px;
+    }
+
+    .sidebar-section-title {
+        display: none;
+    }
+
+    .navbar-bottom {
+        padding-top: 14px;
+    }
+
+    .github-connect-button,
+    .logout-button {
+        padding: 11px 0;
+    }
+
+    .github-connect-button span:last-child,
+    .logout-button span:last-child {
+        display: none;
+    }
+
+    .github-connected,
+    .connection-status {
+        justify-content: center;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .github-connected strong,
+    .github-connected span:not(.connection-dot),
+    .connection-status strong,
+    .connection-status span:not(.connection-dot) {
+        display: none;
+    }
+
+    main,
+    .main-content,
+    .page-content,
+    .page-container {
+        margin-left: 70px;
+    }
+
     .github-oauth-message {
         top: 15px;
-        left: 15px;
+        left: 85px;
         right: 15px;
 
         min-width: 0;
         max-width: none;
     }
+}
 
-    .github-connect-button,
-    .logout-button {
-        padding: 12px;
+
+/* =========================================================
+   VERY SMALL SCREENS
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .navbar {
+        width: 58px;
+        padding-left: 7px;
+        padding-right: 7px;
+    }
+
+    .nav-links a {
+        min-height: 42px;
+    }
+
+    main,
+    .main-content,
+    .page-content,
+    .page-container {
+        margin-left: 58px;
+    }
+
+    .github-oauth-message {
+        left: 70px;
     }
 }
 /* =========================================================
