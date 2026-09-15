@@ -9,19 +9,7 @@ const api = axios.create({
     withCredentials: true,
 });
 
-const getCookie = (name) => {
-    const cookies = document.cookie.split(";");
-
-    for (const cookie of cookies) {
-        const [key, value] = cookie.trim().split("=");
-
-        if (key === name) {
-            return decodeURIComponent(value);
-        }
-    }
-
-    return null;
-};
+let csrfToken = null;
 
 api.interceptors.request.use(
     async (config) => {
@@ -35,29 +23,23 @@ api.interceptors.request.use(
         ];
 
         if (unsafeMethods.includes(method)) {
-            let csrfToken = getCookie("csrftoken");
-
             if (!csrfToken) {
-                await axios.get(
+                const response = await axios.get(
                     `${API_BASE_URL}auth/csrf/`,
                     {
                         withCredentials: true,
                     }
                 );
 
-                csrfToken = getCookie("csrftoken");
+                csrfToken = response.data.csrfToken;
             }
 
-            if (csrfToken) {
-                config.headers["X-CSRFToken"] = csrfToken;
-            }
+            config.headers["X-CSRFToken"] = csrfToken;
         }
 
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 export default api;
