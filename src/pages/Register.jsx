@@ -35,7 +35,7 @@ function Register() {
                 passwordConfirm
             );
 
-            navigate("/", { replace: true });
+            navigate("/dashboard", { replace: true });
         } catch (err) {
             setError(
                 err.response?.data?.error ||

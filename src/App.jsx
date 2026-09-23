@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
     BrowserRouter,
     Navigate,
@@ -7,15 +8,20 @@ import {
 } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
+import Landing from "./pages/Landing";
 import Repositories from "./pages/Repositories";
 import PullRequests from "./pages/PullRequests";
 import Reviews from "./pages/Reviews";
 import ReviewDetails from "./pages/ReviewDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import ProfileMenu from "./components/ProfileMenu";
+import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 
 
 function ProtectedRoute({ children }) {
@@ -56,7 +62,7 @@ function PublicRoute({ children }) {
     }
 
     if (user) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/dashboard" replace />;
     }
 
     return children;
@@ -64,14 +70,27 @@ function PublicRoute({ children }) {
 
 
 function ProtectedApp() {
-    return (
-        <>
-            <Navbar />
+    const [sidebarOpen, setSidebarOpen] = useState(true);
 
-            <main>
+    return (
+        <div
+            className={`app-layout ${
+                sidebarOpen ? "sidebar-open" : "sidebar-closed"
+            }`}
+        >
+            <ProfileMenu />
+
+            <Sidebar
+                open={sidebarOpen}
+                onToggle={() =>
+                    setSidebarOpen((value) => !value)
+                }
+            />
+
+            <main className="app-main">
                 <Routes>
                     <Route
-                        path="/"
+                        path="/dashboard"
                         element={<Dashboard />}
                     />
 
@@ -94,47 +113,64 @@ function ProtectedApp() {
                         path="/reviews/:id"
                         element={<ReviewDetails />}
                     />
+
+                    <Route
+                        path="/profile"
+                        element={<Profile />}
+                    />
+
+                    <Route
+                        path="/settings"
+                        element={<Settings />}
+                    />
                 </Routes>
             </main>
-        </>
+        </div>
     );
 }
 
 
 function App() {
     return (
-        <BrowserRouter>
-            <AuthProvider>
-                <Routes>
-                    <Route
-                        path="/login"
-                        element={
-                            <PublicRoute>
-                                <Login />
-                            </PublicRoute>
-                        }
-                    />
+        <ThemeProvider>
+            <BrowserRouter>
+                <AuthProvider>
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={<Landing />}
+                        />
 
-                    <Route
-                        path="/register"
-                        element={
-                            <PublicRoute>
-                                <Register />
-                            </PublicRoute>
-                        }
-                    />
+                        <Route
+                            path="/login"
+                            element={
+                                <PublicRoute>
+                                    <Login />
+                                </PublicRoute>
+                            }
+                        />
 
-                    <Route
-                        path="/*"
-                        element={
-                            <ProtectedRoute>
-                                <ProtectedApp />
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
-            </AuthProvider>
-        </BrowserRouter>
+                        <Route
+                            path="/register"
+                            element={
+                                <PublicRoute>
+                                    <Register />
+                                </PublicRoute>
+                            }
+                        />
+
+                        <Route
+                            path="/*"
+                            element={
+                                <ProtectedRoute>
+                                    <ProtectedApp />
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </AuthProvider>
+            </BrowserRouter>
+        </ThemeProvider>
     );
 }
 
