@@ -3,10 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../context/authContext";
 import ThemeToggle from "./ThemeToggle";
-
-const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://ai-code-reviewer-backend-0f6s.onrender.com/api/";
+import { API_BASE_URL } from "../services/api";
 
 function resolveAvatar(avatar) {
     if (!avatar) return null;

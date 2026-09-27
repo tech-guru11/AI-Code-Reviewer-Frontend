@@ -19,11 +19,6 @@ function ReviewDetail() {
                     `reviews/${id}/`
                 );
 
-                console.log(
-                    "Review details:",
-                    response.data
-                );
-
                 setReview(response.data);
             } catch (err) {
                 console.error(

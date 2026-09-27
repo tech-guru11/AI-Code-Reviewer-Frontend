@@ -8,10 +8,7 @@ import {
 
 import { useAuth } from "./authContext";
 import VerifyEmailModal from "../components/VerifyEmailModal";
-
-const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://ai-code-reviewer-backend-0f6s.onrender.com/api/";
+import { API_BASE_URL } from "../services/api";
 
 export const GitHubConnectContext =
     createContext(null);

@@ -86,11 +86,6 @@ function PullRequests() {
 
                 const review = response.data;
 
-                console.log(
-                    `Review ${reviewId} status:`,
-                    review.status
-                );
-
                 if (review.status === "completed") {
                     return review;
                 }
@@ -168,20 +163,11 @@ function PullRequests() {
                 `pull-requests/${pullRequestId}/review/`
             );
 
-            console.log(
-                "Review response:",
-                response.data
-            );
-
             const {
                 review_id,
                 commit_sha,
                 status,
             } = response.data;
-
-            console.log("Review ID:", review_id);
-            console.log("Commit SHA:", commit_sha);
-            console.log("Review status:", status);
 
             /*
              * If this commit has already been reviewed,

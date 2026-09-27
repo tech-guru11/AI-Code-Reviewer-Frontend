@@ -19,8 +19,6 @@ function Reviews() {
 
                 const response = await api.get("reviews/");
 
-                console.log("Reviews:", response.data);
-
                 setReviews(response.data);
             } catch (err) {
                 console.error("Failed to load reviews:", err);

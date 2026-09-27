@@ -1,11 +1,7 @@
 import { useRef, useState } from "react";
 import { useAuth } from "../context/authContext";
 import { useGitHubConnect } from "../context/GitHubConnectContext";
-import api from "../services/api";
-
-const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL ||
-    "https://ai-code-reviewer-backend-0f6s.onrender.com/api/";
+import api, { API_BASE_URL } from "../services/api";
 
 function resolveAvatar(avatar) {
     if (!avatar) return null;
