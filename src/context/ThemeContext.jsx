@@ -1,11 +1,6 @@
-import {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-const ThemeContext = createContext(null);
+import { ThemeContext } from "./themeContext";
 
 function getInitialTheme() {
     const stored = localStorage.getItem("theme");
@@ -41,14 +36,4 @@ export function ThemeProvider({ children }) {
             {children}
         </ThemeContext.Provider>
     );
-}
-
-export function useTheme() {
-    const context = useContext(ThemeContext);
-
-    if (!context) {
-        throw new Error("useTheme must be used inside ThemeProvider");
-    }
-
-    return context;
 }

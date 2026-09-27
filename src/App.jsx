@@ -20,8 +20,10 @@ import ProfileMenu from "./components/ProfileMenu";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
+import { useAuth } from "./context/authContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { GitHubConnectProvider } from "./context/GitHubConnectContext";
 
 
 function ProtectedRoute({ children }) {
@@ -135,6 +137,7 @@ function App() {
         <ThemeProvider>
             <BrowserRouter>
                 <AuthProvider>
+                    <GitHubConnectProvider>
                     <Routes>
                         <Route
                             path="/"
@@ -168,6 +171,7 @@ function App() {
                             }
                         />
                     </Routes>
+                    </GitHubConnectProvider>
                 </AuthProvider>
             </BrowserRouter>
         </ThemeProvider>

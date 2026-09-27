@@ -368,7 +368,6 @@ function Reviews() {
                     {filteredReviews.map((review) => {
 
                         const score = Number(review.score);
-                        const findingCount = getFindingCount(review);
 
                         return (
                             <article

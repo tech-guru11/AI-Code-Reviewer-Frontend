@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams} from "react-router-dom";
 import api from "../services/api";
 
@@ -18,11 +18,8 @@ function PullRequests() {
         (repository) =>
             String(repository.id) === String(repositoryId)
     );
-    useEffect(() => {
-        loadPullRequests();
-    }, [repositoryId]);
 
-    const loadPullRequests = async () => {
+    const loadPullRequests = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
@@ -61,7 +58,11 @@ function PullRequests() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [repositoryId]);
+
+    useEffect(() => {
+        loadPullRequests();
+    }, [loadPullRequests]);
 
     /*
      * Poll one specific review.

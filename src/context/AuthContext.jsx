@@ -1,62 +1,62 @@
 import {
-    createContext,
-    useContext,
+    useCallback,
     useEffect,
     useState,
 } from "react";
 
 import api from "../services/api";
+import { AuthContext } from "./authContext";
 
-const AuthContext = createContext(null);
+const GITHUB_MESSAGES = {
+    connected: {
+        type: "success",
+        text: "GitHub connected successfully.",
+    },
+    already_connected: {
+        type: "error",
+        text: "This GitHub account is already connected to another AI Code Reviewer account.",
+    },
+};
+
+function getGithubStatusFromUrl() {
+    return new URLSearchParams(
+        window.location.search
+    ).get("github");
+}
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [githubMessage, setGithubMessage] = useState(null);
+    const [githubMessage, setGithubMessage] = useState(
+        () =>
+            GITHUB_MESSAGES[
+                getGithubStatusFromUrl()
+            ] || null
+    );
 
-    const fetchCurrentUser = async () => {
+    const fetchCurrentUser = useCallback(async () => {
         try {
             const response = await api.get("auth/me/");
 
             setUser(response.data.user);
-        } catch (error) {
+        } catch {
             setUser(null);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const githubStatus = params.get("github");
-
-        if (githubStatus === "connected") {
-            setGithubMessage({
-                type: "success",
-                text: "GitHub connected successfully.",
-            });
-
-            fetchCurrentUser();
-        } else if (githubStatus === "already_connected") {
-            setGithubMessage({
-                type: "error",
-                text:
-                    "This GitHub account is already connected to another AI Code Reviewer account.",
-            });
-
-            fetchCurrentUser();
-        } else {
-            fetchCurrentUser();
-        }
-
-        if (githubStatus) {
+        if (getGithubStatusFromUrl()) {
             window.history.replaceState(
                 {},
                 document.title,
                 window.location.pathname
             );
         }
-    }, []);
+
+        fetchCurrentUser();
+    }, [fetchCurrentUser]);
 
     const login = async (username, password) => {
         const response = await api.post("auth/login/", {
@@ -134,18 +134,6 @@ export function AuthProvider({ children }) {
             {children}
         </AuthContext.Provider>
     );
-}
-
-export function useAuth() {
-    const context = useContext(AuthContext);
-
-    if (!context) {
-        throw new Error(
-            "useAuth must be used inside AuthProvider"
-        );
-    }
-
-    return context;
 }
 
 function getCookie(name) {

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
+import { useGitHubConnect } from "../context/GitHubConnectContext";
 import api from "../services/api";
 
 const API_BASE_URL =
@@ -93,9 +94,10 @@ function Profile() {
         }
     };
 
+    const { connectGitHub } = useGitHubConnect();
+
     const handleConnectGitHub = () => {
-        window.location.href =
-            `${import.meta.env.VITE_API_BASE_URL}auth/github/connect/`;
+        connectGitHub();
     };
 
     return (

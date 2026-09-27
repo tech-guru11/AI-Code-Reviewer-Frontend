@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/authContext";
+import { useGitHubConnect } from "../context/GitHubConnectContext";
+import { useTheme } from "../context/themeContext";
 import ThemeToggle from "../components/ThemeToggle";
 import api from "../services/api";
 
@@ -18,9 +19,10 @@ function Settings() {
 
     const [saving, setSaving] = useState(false);
 
+    const { connectGitHub } = useGitHubConnect();
+
     const handleConnectGitHub = () => {
-        window.location.href =
-            `${import.meta.env.VITE_API_BASE_URL}auth/github/connect/`;
+        connectGitHub();
     };
 
     const handleChangePassword = async (event) => {

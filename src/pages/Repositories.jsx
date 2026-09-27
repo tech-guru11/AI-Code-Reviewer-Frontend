@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 
@@ -10,26 +10,13 @@ function Repositories() {
     const [error, setError] = useState("");
     const [syncMessage, setSyncMessage] = useState("");
 
-    const loadRepositories = async () => {
+    const fetchRepositories = useCallback(async () => {
         try {
-            setLoading(true);
-            setError("");
-
             const [githubResponse, databaseResponse] =
                 await Promise.all([
                     api.get("github/repositories/"),
                     api.get("repositories/"),
                 ]);
-
-            console.log(
-                "GitHub repositories:",
-                githubResponse.data
-            );
-
-            console.log(
-                "Database repositories:",
-                databaseResponse.data
-            );
 
             setGithubRepositories(githubResponse.data);
             setRepositories(databaseResponse.data);
@@ -47,11 +34,18 @@ function Repositories() {
         } finally {
             setLoading(false);
         }
+    }, []);
+
+    const refreshRepositories = () => {
+        setLoading(true);
+        setError("");
+
+        return fetchRepositories();
     };
 
     useEffect(() => {
-        loadRepositories();
-    }, []);
+        fetchRepositories();
+    }, [fetchRepositories]);
 
     const isRepositorySynced = (githubRepository) => {
         return repositories.some(
@@ -79,7 +73,7 @@ function Repositories() {
                 `${githubRepository.name} synchronized successfully.`
             );
 
-            await loadRepositories();
+            await refreshRepositories();
         } catch (err) {
             console.error(
                 "Failed to sync repository:",
@@ -138,7 +132,7 @@ function Repositories() {
 
                     <button
                         className="sync-repositories-button"
-                        onClick={loadRepositories}
+                        onClick={refreshRepositories}
                         disabled={loading}
                     >
                         ↻ Refresh

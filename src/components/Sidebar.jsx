@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
+import { useGitHubConnect } from "../context/GitHubConnectContext";
 
 const API_BASE_URL =
     import.meta.env.VITE_API_BASE_URL ||
@@ -27,9 +28,10 @@ function Sidebar({ open = true, onToggle }) {
 
     const avatar = resolveAvatar(user?.avatar);
 
+    const { connectGitHub } = useGitHubConnect();
+
     const handleGitHubConnect = () => {
-        window.location.href =
-            `${import.meta.env.VITE_API_BASE_URL}auth/github/connect/`;
+        connectGitHub();
     };
 
     const handleLogout = async () => {
